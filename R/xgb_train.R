@@ -1,0 +1,117 @@
+#' XGBoost for MIPD
+#'
+#' @param train A preprocessed (ml_data_preprocess function) training dataset with one line per patient containing covariates, the administered dose, and interdose interval.
+#' @param continuous_cov List of continuous covariates.
+#' @param categorical_cov List of categorical covariates.
+#' @param seed Random seed.
+#' @param grid_size Grid size for hyperparameter tuning.
+#' @returns Tuning autoplots, tuned hyperparameters, and variable importance plot, and trained model.
+#' @export
+#' @import tidymodels
+#' @import vip
+#' @import shapviz
+#' @import doParallel
+#' @import ggplot2
+#' @import brulee
+#' @import tidyr
+#' @import purrr
+#' @import tidyverse
+#' @import parallel
+#' @import stacks
+#' @examples
+#' results <- xgb(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
+
+xgb_train <- function(train,
+                continuous_cov,
+                categorical_cov,
+                grid_size = 10,
+                seed = 1991) {
+
+  set.seed(seed)
+
+  reg_metrics <- metric_set(mae)
+
+  # predictors (covariates + number of daily administrations)
+  predictors <- c(continuous_cov, categorical_cov, "INF")
+  formula <- as.formula(paste("log_DOSE_TARGET ~", paste(predictors, collapse = " + ")))
+
+  data_recipe <- recipe(formula, data = train) |>
+    step_mutate_at(all_of(categorical_cov), fn = ~factor(.)) |>
+    step_dummy(all_nominal_predictors())
+
+  # Model specifications
+  xgb_spec <- boost_tree(mode = "regression",
+                         trees = tune(),
+                         min_n = tune(),
+                         tree_depth = tune(),
+                         learn_rate = tune()) |>
+    set_engine("xgboost")
+
+  # Cross-validation
+  set.seed(seed)
+  folds <- vfold_cv(train, v = 10, strata = strata_dosing_regimen)
+
+  # Parallel
+  num_cores <- max(1, parallel::detectCores() - 1)
+  cl <- parallel::makeCluster(num_cores, type = "PSOCK",
+                              rscript_args = c("--no-init-file", "--no-site-file", "--no-environ"))
+  doParallel::registerDoParallel(cl)
+
+  # Helper that tunes a model and returns useful objects
+  tune_predict <- function(spec, name, recipe_obj, grid_size) {
+    wf <- workflow() %>%
+      add_model(spec) %>%
+      add_recipe(recipe_obj)
+
+    tune_res <- tune_grid(
+      wf,
+      resamples = folds,
+      grid = grid_size,
+      metrics = reg_metrics,
+      control = control_stack_grid(),
+    )
+
+    best_params <- select_best(tune_res, metric = "mae")
+    final_wf <- finalize_workflow(wf, best_params)
+    final_fit <- fit(final_wf, data = train)
+
+    list(
+      name = name,
+      workflow = wf,
+      recipe = recipe_obj,
+      tune_res = tune_res,
+      best_params = best_params,
+      final_wf = final_wf,
+      final_fit = final_fit
+    )
+  }
+
+  # Tune all models (store results)
+  tune_xgb <- tune_predict(xgb_spec, "XGB", data_recipe, grid_size)
+
+  # Stop parallel
+  stopCluster(cl)
+  registerDoSEQ()
+
+  # Tuning autoplots
+  tuning_xgb <- autoplot(tune_xgb$tune_res, metric = "mae", scientific = FALSE) +
+    theme_bw() +
+    ggtitle("Hyperparameter tuning - XGBoost")
+
+  # Final workflows
+  final_xgb_wf <- tune_xgb$final_wf
+
+  # Final fitted workflows
+  final_xgb_fit <- tune_xgb$final_fit
+
+  # Impurity-based variable importance
+  xgb_vip <- tryCatch({
+    final_xgb_fit %>%
+      extract_fit_engine() %>%
+      vip(geom = "point") + ggtitle("Variable importance - XGBoost")
+  }, error = function(e) NULL)
+
+  # Return
+  return(list(tune_plot_xgb = tuning_xgb, final_wf_xgb = final_xgb_wf, xgb_vip = xgb_vip, tune_res_xgb = tune_xgb$tune_res, final_xgb_fit = final_xgb_fit))
+
+}
