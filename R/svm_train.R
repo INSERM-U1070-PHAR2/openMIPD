@@ -12,7 +12,17 @@
 #' @import parsnip
 #' @import rsample
 #' @import workflows
-
+#' @import tidymodels
+#' @import vip
+#' @import shapviz
+#' @import doParallel
+#' @import ggplot2
+#' @import brulee
+#' @import tidyr
+#' @import purrr
+#' @import tidyverse
+#' @import parallel
+#' @import stacks
 #' @examples
 #' results <- svm(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 
@@ -23,18 +33,6 @@ svm_train <- function(train,
                 seed = 1991) {
 
   set.seed(seed)
-
-  library(tidymodels)
-  library(vip)
-  library(shapviz)
-  library(doParallel)
-  library(ggplot2)
-  library(brulee)
-  library(tidyr)
-  library(purrr)
-  library(tidyverse)
-  library(parallel)
-  library(stacks)
 
   reg_metrics <- metric_set(mae)
 
