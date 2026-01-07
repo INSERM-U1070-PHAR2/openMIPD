@@ -24,6 +24,7 @@
 #' @import parallel
 #' @import stacks
 #' @import tune
+#' @import foreach
 #' @examples
 #' results <- svm(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 

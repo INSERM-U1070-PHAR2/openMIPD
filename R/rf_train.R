@@ -25,6 +25,7 @@
 #' @import rsample
 #' @import workflows
 #' @import tune
+#' @import foreach
 #' @examples
 #' results <- rf(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 
