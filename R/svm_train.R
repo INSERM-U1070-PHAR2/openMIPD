@@ -11,6 +11,7 @@
 #' @import recipes
 #' @import parsnip
 #' @import rsample
+#' @import workflows
 
 #' @examples
 #' results <- svm(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))

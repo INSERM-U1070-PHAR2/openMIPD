@@ -14,6 +14,7 @@
 #' @import yardstick
 #' @import parsnip
 #' @import rsample
+#' @import workflows
 #' @export
 
 
