@@ -11,6 +11,7 @@
 #' @import tidymodels
 #' @import dplyr
 #' @import rpart.plot
+#' @import yardstick
 #' @export
 
 

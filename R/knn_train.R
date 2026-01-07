@@ -19,6 +19,7 @@
 #' @import parallel
 #' @import kknn
 #' @import stacks
+#' @import yardstick
 #' @examples
 #' results <- knn_train(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 

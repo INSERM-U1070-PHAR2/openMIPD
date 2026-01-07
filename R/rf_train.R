@@ -19,6 +19,7 @@
 #' @import tidyverse
 #' @import parallel
 #' @import stacks
+#' @import yardstick
 #' @examples
 #' results <- rf(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 
