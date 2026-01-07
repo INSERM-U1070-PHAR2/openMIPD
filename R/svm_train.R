@@ -7,8 +7,8 @@
 #' @param grid_size Grid size for hyperparameter tuning.
 #' @returns Tuning autoplots, tuned hyperparameters, and variable importance plot, and trained model.
 #' @export
-#' @examples
 #' @import yardstick
+#' @examples
 #' results <- svm(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 
 svm_train <- function(train,
