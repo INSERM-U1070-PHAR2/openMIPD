@@ -24,6 +24,7 @@
 #' @import parsnip
 #' @import rsample
 #' @import workflows
+#' @import tune
 #' @examples
 #' results <- knn_train(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 

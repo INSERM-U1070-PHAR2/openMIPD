@@ -15,6 +15,7 @@
 #' @import parsnip
 #' @import rsample
 #' @import workflows
+#' @import tune
 #' @export
 
 
