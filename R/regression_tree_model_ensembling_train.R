@@ -13,6 +13,7 @@
 #' @import rpart.plot
 #' @import yardstick
 #' @import parsnip
+#' @import rsample
 #' @export
 
 

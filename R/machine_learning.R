@@ -25,7 +25,7 @@
 #' @import yardstick
 #' @import recipes
 #' @import parsnip
-
+#' @import rsample
 #' @examples
 #' results <- machine_learning(train = AMOX_CMIN_TRAIN, test = AMOX_CMIN_TEST, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"), target_variable = "CMIN", target_concentration = 60)
 
