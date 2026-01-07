@@ -8,6 +8,8 @@
 #' @returns Tuning autoplots, tuned hyperparameters, and variable importance plot, and trained model.
 #' @export
 #' @import yardstick
+#' @import recipes
+
 #' @examples
 #' results <- svm(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))
 
