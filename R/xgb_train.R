@@ -20,6 +20,7 @@
 #' @import stacks
 #' @import yardstick
 #' @import recipes
+#' @import parsnip
 
 #' @examples
 #' results <- xgb(train = AMOX_CMIN_TRAIN, continuous_cov = c("WT", "CRCL"), categorical_cov = c("BURN", "OBESE"))

@@ -12,6 +12,7 @@
 #' @import dplyr
 #' @import rpart.plot
 #' @import yardstick
+#' @import parsnip
 #' @export
 
 
